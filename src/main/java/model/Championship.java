@@ -3,6 +3,8 @@ package model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Entity
@@ -13,4 +15,11 @@ public class Championship {
     @Id
     @GeneratedValue
     private int id;
+
+    private String name;
+
+    @ManyToMany
+    private List<Team> teams;
+
+    //private Map<>;
 }
