@@ -13,4 +13,7 @@ public class Favourite {
     @Id
     @GeneratedValue
     private int id;
+
+    @ManyToOne // ???
+    private Team team;
 }
