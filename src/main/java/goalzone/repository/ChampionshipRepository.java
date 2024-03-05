@@ -1,0 +1,7 @@
+package goalzone.repository;
+
+import goalzone.model.Championship;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface ChampionshipRepository extends JpaRepository<Championship, Integer> {
+}
