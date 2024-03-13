@@ -29,4 +29,9 @@ public class AverageUserService {
         averageUserRepository.save(newUser);
         return newUser;
     }
+
+    @Transactional
+    public void modifyPersonalData(AverageUser averageUser){
+        averageUserRepository.save(averageUser);
+    }
 }
