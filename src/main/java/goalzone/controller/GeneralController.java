@@ -1,74 +1,65 @@
 package goalzone.controller;
 
-import goalzone.dto.AdminUserDto;
-import goalzone.dto.AverageUserDto;
-import goalzone.dto.LoginResponse;
-import goalzone.service.AdminUserService;
+import goalzone.dto.ChampionshipDto;
+import goalzone.dto.GameDto;
+import goalzone.dto.TeamDto;
+import goalzone.mapping.AverageUserMapper;
+import goalzone.mapping.ChampionshipMapper;
+import goalzone.mapping.GameMapper;
+import goalzone.mapping.TeamMapper;
+import goalzone.model.Championship;
+import goalzone.repository.AverageUserRepository;
+import goalzone.repository.ChampionshipRepository;
+import goalzone.repository.GameRepository;
+import goalzone.repository.TeamRepository;
 import goalzone.service.AverageUserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/general")
 @RequiredArgsConstructor
 public class GeneralController {
+    private final ChampionshipRepository championshipRepository;
+    private final GameRepository gameRepository;
+    private final TeamRepository teamRepository;
 
-    private final AdminUserService adminUserService;
-    private final AverageUserService averageUserService;
+    private final ChampionshipMapper championshipMapper;
+    private final GameMapper gameMapper;
+    private final TeamMapper teamMapper;
 
-    @PostMapping("/login/user")
-    public ResponseEntity<LoginResponse> loginUser(@RequestBody AverageUserDto user){
-        try{
-            averageUserService.signIn(user.getUsername(), user.getPassword());
-        }
-        catch (RuntimeException e){
-            System.out.println(e.getMessage());
-            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
-        }
-        LoginResponse response=new LoginResponse();
-        response.setUsername(user.getUsername());
-        response.setType("averageUser");
-        return new ResponseEntity<>(response, HttpStatus.OK);
+    @GetMapping("/games")
+    public List<GameDto> getGamesFromChampionship(@RequestParam("championshipId") int championshipId) {
+        Championship championship = championshipRepository.findById(championshipId).orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        System.out.println(gameMapper.gamesToDtos(championship.getGames()));
+        return gameMapper.gamesToDtos(championship.getGames());
     }
 
-    @PostMapping("/login/admin")
-    public ResponseEntity<LoginResponse> loginAdmin(@RequestBody AdminUserDto user){
-        try{
-            adminUserService.signIn(user.getUsername(), user.getPassword());
-        }
-        catch (RuntimeException e){
-            System.out.println(e.getMessage());
-            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
-        }
-        LoginResponse response=new LoginResponse();
-        response.setUsername(user.getUsername());
-        response.setType("adminUser");
-        return new ResponseEntity<>(response, HttpStatus.OK);
+    @GetMapping("/allgames")
+    public List<GameDto> getGames() {
+        return gameMapper.gamesToDtos(gameRepository.findAll());
     }
 
-    @PostMapping("/signup/user")
-    public void signUpUser(@RequestBody AverageUserDto user){
-        try{
-            averageUserService.signUp(user.getUsername(), user.getPassword());
-        }
-        catch (RuntimeException e){
-            System.out.println(e.getMessage());
-            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
-        }
+    @GetMapping("/allchampionships")
+    public List<ChampionshipDto> getChampionships() {
+        return championshipMapper.championshipsToDtos(championshipRepository.findAll());
+    }
+    @GetMapping("/allteams")
+    public List<TeamDto> getTeams() {
+        return teamMapper.teamsToDtos(teamRepository.findAll());
     }
 
-    @PostMapping("/signup/admin")
-    public void signUpAdmin(@RequestBody AdminUserDto user) {
-        try{
-            adminUserService.signUp(user.getUsername(), user.getPassword());
-        }
-        catch (RuntimeException e){
-            System.out.println(e.getMessage());
-            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
-        }
+    @GetMapping("/teams")
+    public List<TeamDto> getTeamsFromChampionship(@RequestParam("championshipId") int championshipId) {
+        Championship championship = championshipRepository.findById(championshipId).orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        return teamMapper.teamsToDtos(championship.getTeams());
     }
+
 }
