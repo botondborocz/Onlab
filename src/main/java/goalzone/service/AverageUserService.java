@@ -2,9 +2,11 @@ package goalzone.service;
 
 import lombok.RequiredArgsConstructor;
 import goalzone.model.AverageUser;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import goalzone.repository.AverageUserRepository;
+import org.springframework.web.server.ResponseStatusException;
 
 @RequiredArgsConstructor
 @Service
@@ -31,7 +33,20 @@ public class AverageUserService {
     }
 
     @Transactional
-    public void modifyPersonalData(AverageUser averageUser){
-        averageUserRepository.save(averageUser);
+    public void modifyPersonalData(AverageUser averageUser, String oldUsername){
+        AverageUser averageUserInDb = averageUserRepository.findByUsername(averageUser.getUsername());
+        if(averageUserInDb == null) {
+            averageUserRepository.save(averageUser);
+            averageUserRepository.delete(averageUserRepository.findByUsername(oldUsername));
+        }
+        else {
+            System.out.println(averageUser.getBirthDate());
+            averageUserInDb.setPassword(averageUser.getPassword());
+            averageUserInDb.setFirstName(averageUser.getFirstName());
+            averageUserInDb.setLastName(averageUser.getLastName());
+            averageUserInDb.setBirthDate(averageUser.getBirthDate());
+            averageUserInDb.setFavourites(averageUser.getFavourites());
+            averageUserRepository.save(averageUserInDb);
+        }
     }
 }

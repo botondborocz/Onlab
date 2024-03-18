@@ -15,10 +15,14 @@ public class Game {
     @Id
     @GeneratedValue
     private int id;
-
     @ManyToMany
     private List<Team> teams;
+    private String homeTeamName;
+    private String awayTeamName;
     private int homeScore;
     private int awayScore;
+    @ManyToOne
+    private Championship championship;
+    private String championshipName;
 }
 
