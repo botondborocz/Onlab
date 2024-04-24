@@ -6,10 +6,7 @@ import goalzone.mapping.ChampionshipMapper;
 import goalzone.mapping.GameMapper;
 import goalzone.mapping.TeamMapper;
 import goalzone.model.*;
-import goalzone.repository.AdminUserRepository;
-import goalzone.repository.ChampionshipRepository;
-import goalzone.repository.GameRepository;
-import goalzone.repository.TeamRepository;
+import goalzone.repository.*;
 import goalzone.service.AdminUserService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +24,7 @@ public class AdminUserController {
     private final GameRepository gameRepository;
     private final TeamRepository teamRepository;
     private final ChampionshipRepository championshipRepository;
+    private final PlayerRepository playerRepository;
 
     private final AdminUserService adminUserService;
 
@@ -58,12 +56,12 @@ public class AdminUserController {
 
     @PostMapping("newscore")
     public void addNewScore(@RequestBody GameDto gameDto) {
-        System.out.println(gameDto.getId());
         adminUserService.addNewScore(gameMapper.dtoToGame(gameDto));
     }
 
     @PostMapping("/newgame")
     public void createNewGame(@RequestBody GameDto gameDto) {
+        System.out.println(gameDto.getDate());
         Game game = gameMapper.dtoToGame(gameDto);
         Championship championship = championshipRepository.findByName(game.getChampionshipName());
         Team team1 = teamRepository.findByName(game.getHomeTeamName());
@@ -71,12 +69,33 @@ public class AdminUserController {
         try {
             if (!championship.getTeams().contains(team1) || !championship.getTeams().contains(team2))
                 throw new RuntimeException("Teams are not in that championship");
-            else
+            else {
                 gameRepository.save(game);
+                championship.addGame(game);
+                championshipRepository.save(championship);
+            }
         }
         catch (RuntimeException e) {
             System.out.println(e.getMessage());
             throw new ResponseStatusException(HttpStatus.CONFLICT);
         }
+    }
+
+    @PostMapping("/addscorer")
+    public void addNewScorer(@RequestBody NewScorerDto newScorerDto) {
+        Game game = gameRepository.findById(newScorerDto.getGameId()).orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        Player homeScorer;
+        Player awayScorer;
+        if (newScorerDto.getHomeScorerId() != 0) {
+            homeScorer = playerRepository.findById(newScorerDto.getHomeScorerId()).orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+            game.setHomeScore(newScorerDto.getHomeScore());
+            game.addHomeScorer(homeScorer);
+        }
+        if (newScorerDto.getAwayScorerId() != 0) {
+            awayScorer = playerRepository.findById(newScorerDto.getAwayScorerId()).orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+            game.setAwayScore(newScorerDto.getAwayScore());
+            game.addAwayScorer(awayScorer);
+        }
+        gameRepository.save(game);
     }
 }

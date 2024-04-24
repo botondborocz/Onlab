@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -21,7 +22,10 @@ public class Player {
     private LocalDate birthDate;
     private int goals;
     private int assists;
-
     @ManyToOne
     private Team team;
+    @ManyToMany
+    private List<Game> homeGames;
+    @ManyToMany
+    private List<Game> awayGames;
 }
