@@ -1,6 +1,7 @@
 package goalzone.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import goalzone.model.AverageUser;
 import goalzone.model.Championship;
 import goalzone.model.Game;
 import goalzone.model.Player;
@@ -22,4 +23,6 @@ public class TeamDto {
     private List<Player> players;
     @JsonIgnore
     private List<Game> games;
+    @JsonIgnore
+    private List<AverageUser> favoriteForUsers;
 }

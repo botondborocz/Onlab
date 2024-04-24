@@ -3,6 +3,7 @@ package goalzone.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -26,4 +27,15 @@ public class Team {
 
     @ManyToMany (mappedBy = "teams")
     private List<Game> games;
+
+    @ManyToMany
+    private List<AverageUser> favoriteForUsers;
+
+    public void addPlayer(Player player) {
+        if (players == null) {
+            players = new ArrayList<Player>();
+        }
+        players.add(player);
+    }
+
 }

@@ -9,7 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Favourite {
+public class Favorite {
     @Id
     @GeneratedValue
     private int id;
