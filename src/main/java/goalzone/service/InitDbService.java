@@ -19,6 +19,7 @@ public class InitDbService {
     private final TeamRepository teamRepository;
     private final GameRepository gameRepository;
     private final ChampionshipRepository championshipRepository;
+    private final PlayerRepository playerRepository;
 
     @Transactional
     public void initDb() {
@@ -45,15 +46,28 @@ public class InitDbService {
         championship3.addTeam(team5);
         championship3.addTeam(team6);
 
-        Game game1 = createGame(team1, team2, championship1);
+        Game game1 = createGame(team1, team2, championship1, LocalDate.now());
+        Game game2 = createGame(team2, team1, championship1, LocalDate.now().plusDays(2));
         game1.setHomeScore(4);
         game1.setAwayScore(1);
-        Game game2 = createGame(team3, team4, championship2);
-        Game game3 = createGame(team5, team6, championship3);
+        Game game3 = createGame(team3, team4, championship2, LocalDate.now().minusDays(1));
+        Game game4 = createGame(team5, team6, championship3, LocalDate.now().minusDays(2));
 
         championship1.addGame(game1);
-        championship2.addGame(game2);
-        championship3.addGame(game3);
+        championship1.addGame(game2);
+        championship2.addGame(game3);
+        championship3.addGame(game4);
+
+        Player player1 = createPlayer("Robert", "Lewandowski", team1);
+        Player player2 = createPlayer("Joao", "Felix", team1);
+        Player player3 = createPlayer("Jude", "Bellingham", team2);
+
+        team1.addPlayer(player1);
+        team1.addPlayer(player2);
+        team2.addPlayer(player3);
+
+        game1.setHomeScorers(Arrays.asList(player1, player1, player1, player2));
+        game1.setAwayScorers(Arrays.asList(player3));
     }
 
     private AverageUser createAverageUser(String username, String password, String firstName, String lastName, LocalDate birthDate) {
@@ -68,14 +82,20 @@ public class InitDbService {
         return teamRepository.save(Team.builder().name(name).build());
     }
 
-    private Game createGame(Team homeTeam, Team awayTeam, Championship championship) {
+    private Game createGame(Team homeTeam, Team awayTeam, Championship championship, LocalDate date) {
         return gameRepository.save(Game.builder().teams(Arrays.asList(homeTeam, awayTeam))
-                .homeTeamName(homeTeam.getName()).awayTeamName(awayTeam.getName()).championship(championship)
-                .championshipName(championship.getName()).build());
+                .homeTeamName(homeTeam.getName()).awayTeamName(awayTeam.getName())
+                .homeTeamId(homeTeam.getId()).awayTeamId(awayTeam.getId())
+                .championship(championship)
+                .championshipName(championship.getName()).date(date).build());
     }
 
     private Championship createChampionship(String name) {
         return championshipRepository.save(Championship.builder().name(name).build());
+    }
+
+    private Player createPlayer(String firstName, String lastName, Team team) {
+        return playerRepository.save(Player.builder().firstName(firstName).lastName(lastName).team(team).build());
     }
 
     public void clearDb() {
