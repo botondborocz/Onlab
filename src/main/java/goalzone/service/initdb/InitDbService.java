@@ -1,9 +1,8 @@
-package goalzone.service;
+package goalzone.service.initdb;
 
 import goalzone.model.*;
 import goalzone.repository.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +13,8 @@ import java.util.Arrays;
 @Service
 @RequiredArgsConstructor
 public class InitDbService {
+    private final CreateLaLiga createLaLiga;
+
     private final AverageUserRepository averageUserRepository;
     private final AdminUserRepository adminUserRepository;
     private final TeamRepository teamRepository;
@@ -23,6 +24,14 @@ public class InitDbService {
 
     @Transactional
     public void initDb() {
+        clearDb();
+        createLaLiga.initLaLiga();
+        AdminUser adminUser1 = createAdminUser("admin", "admin", "Admin", "Admin", LocalDate.of(1999, 12, 12));
+        AverageUser averageUser1 = createAverageUser("asd", "asd", "Elek", "Vicc", LocalDate.of(2000, 01, 01));
+    }
+
+    @Transactional
+    public void initDb2() {
         AdminUser adminUser1 = createAdminUser("admin", "admin", "Admin", "Admin", LocalDate.of(1999, 12, 12));
         AverageUser averageUser1 = createAverageUser("viccelek", "viccelek", "Elek", "Vicc", LocalDate.of(2000, 01, 01));
         AverageUser averageUser2 = createAverageUser("viccelek2", "viccelek2", "Elek", "Vicc", LocalDate.of(2001, 02, 02));
@@ -78,11 +87,11 @@ public class InitDbService {
         return adminUserRepository.save(AdminUser.builder().username(username).password(password).firstName(firstName).lastName(lastName).birthDate(birthDate).build());
     }
 
-    private Team createTeam(String name) {
+    public Team createTeam(String name) {
         return teamRepository.save(Team.builder().name(name).build());
     }
 
-    private Game createGame(Team homeTeam, Team awayTeam, Championship championship, LocalDate date) {
+    public Game createGame(Team homeTeam, Team awayTeam, Championship championship, LocalDate date) {
         return gameRepository.save(Game.builder().teams(Arrays.asList(homeTeam, awayTeam))
                 .homeTeamName(homeTeam.getName()).awayTeamName(awayTeam.getName())
                 .homeTeamId(homeTeam.getId()).awayTeamId(awayTeam.getId())
@@ -90,19 +99,20 @@ public class InitDbService {
                 .championshipName(championship.getName()).date(date).build());
     }
 
-    private Championship createChampionship(String name) {
+    public Championship createChampionship(String name) {
         return championshipRepository.save(Championship.builder().name(name).build());
     }
 
-    private Player createPlayer(String firstName, String lastName, Team team) {
+    public Player createPlayer(String firstName, String lastName, Team team) {
         return playerRepository.save(Player.builder().firstName(firstName).lastName(lastName).team(team).build());
     }
 
     public void clearDb() {
         adminUserRepository.deleteAllInBatch();
         averageUserRepository.deleteAllInBatch();
-        gameRepository.deleteAllInBatch();
         championshipRepository.deleteAllInBatch();
+        gameRepository.deleteAllInBatch();
+        playerRepository.deleteAllInBatch();
         teamRepository.deleteAllInBatch();
     }
 }
