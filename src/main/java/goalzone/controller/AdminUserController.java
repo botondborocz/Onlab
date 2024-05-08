@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -35,14 +36,12 @@ public class AdminUserController {
 
     @GetMapping("/personaldata/{username}")
     public AdminUserDto getUser(@PathVariable("username") String username){
-        System.out.println("itt vagyok");
-        System.out.println(adminUserRepository.findByUsername(username).getPassword());
-        System.out.println(adminUserRepository.findByUsername(username).getFirstName());
         return adminUserMapper.adminUserToDto(adminUserRepository.findByUsername(username));
     }
 
     @PostMapping("/personaldata/{username}")
     public void modifyPersonalData(@RequestBody AdminUserDto adminUserDto, @PathVariable("username") String username){
+        adminUserDto.setBirthDate(adminUserDto.getBirthDate().plusDays(1));
         try{
             AdminUser userForCheck = adminUserRepository.findByUsername(adminUserDto.getUsername());
             if (userForCheck != null && !userForCheck.getUsername().equals(username))
@@ -61,11 +60,13 @@ public class AdminUserController {
 
     @PostMapping("/newgame")
     public void createNewGame(@RequestBody GameDto gameDto) {
-        System.out.println(gameDto.getDate());
+        gameDto.setDate(gameDto.getDate().plusDays(1));
         Game game = gameMapper.dtoToGame(gameDto);
-        Championship championship = championshipRepository.findByName(game.getChampionshipName());
         Team team1 = teamRepository.findByName(game.getHomeTeamName());
         Team team2 = teamRepository.findByName(game.getAwayTeamName());
+        Championship championship = championshipRepository.findById(game.getChampId()).orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        game.setTeams(Arrays.asList(team1, team2));
+        game.setChampionship(championship);
         try {
             if (!championship.getTeams().contains(team1) || !championship.getTeams().contains(team2))
                 throw new RuntimeException("Teams are not in that championship");
