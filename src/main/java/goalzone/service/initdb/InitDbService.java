@@ -14,6 +14,7 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public class InitDbService {
     private final CreateLaLiga createLaLiga;
+    private final CreatePremierLeague createPremierLeague;
 
     private final AverageUserRepository averageUserRepository;
     private final AdminUserRepository adminUserRepository;
@@ -26,12 +27,14 @@ public class InitDbService {
     public void initDb() {
         clearDb();
         createLaLiga.initLaLiga();
+        createPremierLeague.initPremierLeauge();
         AdminUser adminUser1 = createAdminUser("admin", "admin", "Admin", "Admin", LocalDate.of(1999, 12, 12));
         AverageUser averageUser1 = createAverageUser("asd", "asd", "Elek", "Vicc", LocalDate.of(2000, 01, 01));
     }
 
     @Transactional
     public void initDb2() {
+        clearDb();
         AdminUser adminUser1 = createAdminUser("admin", "admin", "Admin", "Admin", LocalDate.of(1999, 12, 12));
         AverageUser averageUser1 = createAverageUser("viccelek", "viccelek", "Elek", "Vicc", LocalDate.of(2000, 01, 01));
         AverageUser averageUser2 = createAverageUser("viccelek2", "viccelek2", "Elek", "Vicc", LocalDate.of(2001, 02, 02));
@@ -96,7 +99,7 @@ public class InitDbService {
                 .homeTeamName(homeTeam.getName()).awayTeamName(awayTeam.getName())
                 .homeTeamId(homeTeam.getId()).awayTeamId(awayTeam.getId())
                 .championship(championship)
-                .championshipName(championship.getName()).date(date).build());
+                .champId(championship.getId()).date(date).build());
     }
 
     public Championship createChampionship(String name) {

@@ -19,7 +19,6 @@ public class WebApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        dbService.clearDb();
         dbService.initDb();
     }
 }
