@@ -48,7 +48,6 @@ public class AverageUserService {
             averageUserRepository.delete(averageUserRepository.findByUsername(oldUsername));
         }
         else {
-            System.out.println(averageUser.getBirthDate());
             averageUserInDb.setPassword(averageUser.getPassword());
             averageUserInDb.setFirstName(averageUser.getFirstName());
             averageUserInDb.setLastName(averageUser.getLastName());

@@ -21,13 +21,13 @@ public class GameDto {
     private int awayTeamId;
     @JsonIgnore
     private List<Team> teams;
-    @JsonFormat(pattern="yyyy-MM-dd")
+    //@JsonFormat(pattern="yyyy-MM-dd")
     private LocalDate date;
     private int homeScore;
     private int awayScore;
     @JsonIgnore
     private ChampionshipDto championship;
-    private String championshipName;
+    private int champId;
     private boolean homeFavorite;
     private boolean awayFavorite;
 }
