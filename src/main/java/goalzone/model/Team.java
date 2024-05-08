@@ -37,5 +37,4 @@ public class Team {
         }
         players.add(player);
     }
-
 }

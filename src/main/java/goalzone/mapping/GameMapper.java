@@ -12,7 +12,7 @@ import java.util.List;
 public interface GameMapper {
     @Mapping(target = "date", source = "date")
     GameDto gameToDto(Game game);
-    @Mapping(target = "championshipName", source = "championshipName")
+    @Mapping(target = "champId", source = "champId")
     @Mapping(target = "homeFavorite", source = "homeFavorite")
     @Mapping(target = "awayFavorite", source = "awayFavorite")
     @Mapping(target = "homeTeamId", source = "homeTeamId")

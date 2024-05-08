@@ -28,7 +28,7 @@ public class Game {
     private int awayScore;
     @ManyToOne
     private Championship championship;
-    private String championshipName;
+    private int champId;
     @ManyToMany
     private List<Player> homeScorers;
     @ManyToMany

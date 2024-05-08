@@ -93,7 +93,6 @@ public class GeneralController {
         for (Game game: allgames) {
             if (game.getDate().equals(LocalDate.now())) {
                 todayGames.add(gameMapper.gameToDto(game));
-                System.out.println("today: " + game.isHomeFavorite() + " " + game.isAwayFavorite());
             }
         }
         return todayGames;
