@@ -29,12 +29,12 @@ public class AdminUserService {
     }
 
     @Transactional
-    public AdminUser signUp(String username, String password) {
+    public AdminUser signUp(String username, String password, String firstName, String lastName) {
         AdminUser userInDb = adminUserRepository.findByUsername(username);
         if(userInDb != null) {
             throw new RuntimeException("A felhasználónév már foglalt.");
         }
-        AdminUser newUser = AdminUser.builder().username(username).password(password).build();
+        AdminUser newUser = AdminUser.builder().username(username).password(password).firstName(firstName).lastName(lastName).build();
         adminUserRepository.save(newUser);
         return newUser;
     }

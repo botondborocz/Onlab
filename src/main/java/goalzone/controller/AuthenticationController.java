@@ -53,7 +53,7 @@ public class AuthenticationController {
     @PostMapping("/signup/user")
     public void signUpUser(@RequestBody AverageUserDto user){
         try{
-            averageUserService.signUp(user.getUsername(), user.getPassword());
+            averageUserService.signUp(user.getUsername(), user.getPassword(), user.getFirstName(), user.getLastName());
         }
         catch (RuntimeException e){
             System.out.println(e.getMessage());
@@ -64,7 +64,7 @@ public class AuthenticationController {
     @PostMapping("/signup/admin")
     public void signUpAdmin(@RequestBody AdminUserDto user) {
         try{
-            adminUserService.signUp(user.getUsername(), user.getPassword());
+            adminUserService.signUp(user.getUsername(), user.getPassword(), user.getFirstName(), user.getLastName());
         }
         catch (RuntimeException e){
             System.out.println(e.getMessage());

@@ -36,6 +36,7 @@ public class AverageUserController {
     private final AverageUserRepository averageUserRepository;
     private final GameRepository gameRepository;
     private final TeamRepository teamRepository;
+    private final ChampionshipRepository championshipRepository;
 
     private final AverageUserService averageUserService;
 
@@ -51,7 +52,7 @@ public class AverageUserController {
 
     @PostMapping("/personaldata/{username}")
     public void modifyPersonalData(@RequestBody AverageUserDto averageUserDto, @PathVariable String username) {
-        System.out.println(averageUserDto.getBirthDate());
+        averageUserDto.setBirthDate(averageUserDto.getBirthDate().plusDays(1));
         try {
             AverageUser userForCheck = averageUserRepository.findByUsername(averageUserDto.getUsername());
             if (userForCheck != null && !userForCheck.getUsername().equals(username))
@@ -65,11 +66,15 @@ public class AverageUserController {
 
     @PostMapping("changehomefavorite/{username}")
     public void changeHomeFavorite(@RequestBody GameDto gameDto, @PathVariable("username") String username) {
+        System.out.println(gameDto.getId());
+        System.out.println(gameDto.getHomeTeamId());
+        System.out.println(gameDto.getHomeTeamName());
         Game game = gameRepository.findById(gameDto.getId()).orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         AverageUser averageUser = averageUserRepository.findByUsername(username);
-        Team team = teamRepository.findById(gameDto.getHomeTeamId()).orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        //System.out.println(game.isHomeFavorite());
-        //System.out.println(game.getHomeTeamName());
+        //Team team = teamRepository.findById(gameDto.getHomeTeamId()).orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        Team team = teamRepository.findByName(gameDto.getHomeTeamName());
+        System.out.println(game.isHomeFavorite());
+        System.out.println(game.getHomeTeamName());
         if (averageUser.getFavorites().contains(team)) {
             averageUser.removeFavorite(team);
             //game.setAwayFavorite(false);
@@ -113,11 +118,17 @@ public class AverageUserController {
     public List<GameDto> getGamesOfFavoriteTeamsPast(@RequestParam("teamId") int teamId) {
         Team team = teamRepository.findById(teamId).orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         List<GameDto> games = new ArrayList<>();
+        System.out.println(team.getName());
+        System.out.println(team.getGames());
+        System.out.println(team.getChampionships());
         for (Game game : team.getGames()) {
+            System.out.println(game.getDate());
             if (game.getDate().isBefore(LocalDate.now())) {
+                System.out.println("BBBBB");
                 games.add(gameMapper.gameToDto(game));
             }
         }
+        System.out.println(games.size());
         return games;
     }
 
@@ -127,6 +138,7 @@ public class AverageUserController {
         List<GameDto> games = new ArrayList<>();
         for (Game game : team.getGames()) {
             if (game.getDate().isAfter(LocalDate.now()) || game.getDate().equals(LocalDate.now())) {
+                System.out.println("AAAAA");
                 games.add(gameMapper.gameToDto(game));
             }
         }

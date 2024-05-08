@@ -30,12 +30,12 @@ public class AverageUserService {
     }
 
     @Transactional
-    public AverageUser signUp(String username, String password) {
+    public AverageUser signUp(String username, String password, String firstName, String lastName) {
         AverageUser userInDb = averageUserRepository.findByUsername(username);
         if(userInDb != null) {
             throw new RuntimeException("A felhasználónév már foglalt.");
         }
-        AverageUser newUser = AverageUser.builder().username(username).password(password).build();
+        AverageUser newUser = AverageUser.builder().username(username).password(password).firstName(firstName).lastName(lastName).build();
         averageUserRepository.save(newUser);
         return newUser;
     }
