@@ -1,9 +1,7 @@
 package goalzone.mapping;
 
 import goalzone.dto.ChampionshipDto;
-import goalzone.dto.GameDto;
 import goalzone.model.Championship;
-import goalzone.model.Game;
 import org.mapstruct.Mapper;
 
 import java.util.List;

@@ -1,6 +1,8 @@
 package goalzone.controller;
 
-import goalzone.dto.*;
+import goalzone.dto.AdminUserDto;
+import goalzone.dto.GameDto;
+import goalzone.dto.NewScorerDto;
 import goalzone.mapping.AdminUserMapper;
 import goalzone.mapping.ChampionshipMapper;
 import goalzone.mapping.GameMapper;
@@ -8,14 +10,12 @@ import goalzone.mapping.TeamMapper;
 import goalzone.model.*;
 import goalzone.repository.*;
 import goalzone.service.AdminUserService;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Arrays;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -80,6 +80,14 @@ public class AdminUserController {
             System.out.println(e.getMessage());
             throw new ResponseStatusException(HttpStatus.CONFLICT);
         }
+    }
+
+    @DeleteMapping
+    public void deleteGame(@RequestParam int gameId) {
+        Game game = gameRepository.findById(gameId).orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        Championship championship = championshipRepository.findById(game.getChampId()).orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        championship.deleteGame(game);
+        gameRepository.delete(game);
     }
 
     @PostMapping("/addscorer")

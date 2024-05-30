@@ -1,8 +1,6 @@
 package goalzone.mapping;
 
-import goalzone.dto.GameDto;
 import goalzone.dto.TeamDto;
-import goalzone.model.Game;
 import goalzone.model.Team;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

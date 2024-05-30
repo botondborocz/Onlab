@@ -3,8 +3,6 @@ package goalzone.dto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import goalzone.model.Game;
 import goalzone.model.Team;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.Setter;
 

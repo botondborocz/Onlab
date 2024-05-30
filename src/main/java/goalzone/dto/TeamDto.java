@@ -5,8 +5,6 @@ import goalzone.model.AverageUser;
 import goalzone.model.Championship;
 import goalzone.model.Game;
 import goalzone.model.Player;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.Setter;
 

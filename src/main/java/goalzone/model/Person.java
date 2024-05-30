@@ -1,11 +1,16 @@
 package goalzone.model;
 
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -24,7 +29,5 @@ public class Person {
     protected String firstName;
     protected String lastName;
     protected LocalDate birthDate;
-    @ManyToMany
-    private List<Team> favourites; // TODO kell Fav class???
 
 }

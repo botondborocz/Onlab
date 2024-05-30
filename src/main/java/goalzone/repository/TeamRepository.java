@@ -1,6 +1,5 @@
 package goalzone.repository;
 
-import goalzone.model.Championship;
 import goalzone.model.Team;
 import org.springframework.data.jpa.repository.JpaRepository;
 

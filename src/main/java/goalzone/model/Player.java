@@ -16,16 +16,15 @@ public class Player {
     @Id
     @GeneratedValue
     private int id;
-
     private String firstName;
     private String lastName;
     private LocalDate birthDate;
-    private int goals;
-    private int assists;
     @ManyToOne
     private Team team;
     @ManyToMany
     private List<Game> homeGames;
     @ManyToMany
     private List<Game> awayGames;
+    private int goals;
+    private int assists;
 }
