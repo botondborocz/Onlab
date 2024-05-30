@@ -1,15 +1,13 @@
 package goalzone.service;
 
-import goalzone.dto.GameDto;
-import goalzone.model.*;
-import goalzone.repository.ChampionshipRepository;
+import goalzone.model.AdminUser;
+import goalzone.model.Game;
+import goalzone.repository.AdminUserRepository;
 import goalzone.repository.GameRepository;
-import goalzone.repository.TeamRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import goalzone.repository.AdminUserRepository;
 import org.springframework.web.server.ResponseStatusException;
 
 @RequiredArgsConstructor
@@ -17,14 +15,12 @@ import org.springframework.web.server.ResponseStatusException;
 public class AdminUserService {
     private final AdminUserRepository adminUserRepository;
     private final GameRepository gameRepository;
-    private final ChampionshipRepository championshipRepository;
-    private final TeamRepository teamRepository;
     @Transactional
     public AdminUser signIn(String username, String password){
         AdminUser adminUser = adminUserRepository.findByUsername(username);
-        if(adminUser == null) throw new RuntimeException("Nincs ilyen felhasználó.");
-        if(!adminUser.getPassword().equals(password)) throw new RuntimeException("Hibás jelszó.");
-        else if(!adminUser.getUsername().equals(username)) throw new RuntimeException("Hibás felhasználónév.");
+        if(adminUser == null) throw new RuntimeException("User not found.");
+        if(!adminUser.getPassword().equals(password)) throw new RuntimeException("Incorrect password.");
+        else if(!adminUser.getUsername().equals(username)) throw new RuntimeException("Incorrect username.");
         return adminUser;
     }
 
@@ -32,7 +28,7 @@ public class AdminUserService {
     public AdminUser signUp(String username, String password, String firstName, String lastName) {
         AdminUser userInDb = adminUserRepository.findByUsername(username);
         if(userInDb != null) {
-            throw new RuntimeException("A felhasználónév már foglalt.");
+            throw new RuntimeException("Username already taken.");
         }
         AdminUser newUser = AdminUser.builder().username(username).password(password).firstName(firstName).lastName(lastName).build();
         adminUserRepository.save(newUser);
@@ -51,7 +47,6 @@ public class AdminUserService {
             adminUserInDb.setFirstName(adminUser.getFirstName());
             adminUserInDb.setLastName(adminUser.getLastName());
             adminUserInDb.setBirthDate(adminUser.getBirthDate());
-            adminUserInDb.setFavourites(adminUser.getFavourites());
             adminUserRepository.save(adminUserInDb);
         }
     }

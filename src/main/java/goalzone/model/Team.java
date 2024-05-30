@@ -28,12 +28,12 @@ public class Team {
     @ManyToMany (mappedBy = "teams")
     private List<Game> games;
 
-    @ManyToMany
+    @ManyToMany (mappedBy = "favorites")
     private List<AverageUser> favoriteForUsers;
 
     public void addPlayer(Player player) {
         if (players == null) {
-            players = new ArrayList<Player>();
+            players = new ArrayList<>();
         }
         players.add(player);
     }

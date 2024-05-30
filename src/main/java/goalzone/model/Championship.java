@@ -25,19 +25,21 @@ public class Championship {
     @OneToMany
     private List<Game> games;
 
-    //private Map<>;
-
     public void addTeam(Team team) {
         if (teams == null) {
-            teams = new ArrayList<Team>();
+            teams = new ArrayList<>();
         }
         teams.add(team);
     }
 
     public void addGame(Game game) {
         if (games == null) {
-            games = new ArrayList<Game>();
+            games = new ArrayList<>();
         }
         games.add(game);
+    }
+
+    public void deleteGame(Game game) {
+        games.remove(game);
     }
 }
